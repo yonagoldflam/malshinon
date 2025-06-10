@@ -39,9 +39,6 @@ namespace malshinon.dal
             }
             finally
             {
-                if (reader != null && !reader.IsClosed)
-                    reader.Close();
-
                 SqlData.CloseConnection();
             }
 
@@ -57,7 +54,7 @@ namespace malshinon.dal
             try
             {
                 SqlData.OpenConnection();
-                string Query = $"INSERT INTO people (first_name, last_name, secret_code, type, num_reports, num_mentions) VALUES ('{person.FirstName}', '{person.LastName}' , '{person.SecretCode}', '{person.Type}', '{person.NumReports}', '{person.NumMention}');";
+                string Query = $"INSERT INTO people (first_name, last_name, secret_code, type) VALUES ('{person.FirstName}', '{person.LastName}' , '{person.SecretCode}', '{person.Type}');";
                 MySqlCommand cmd = new MySqlCommand(Query, SqlData.connection);
                 cmd.ExecuteNonQuery();
             }
@@ -82,13 +79,9 @@ namespace malshinon.dal
             string SecretCode = Console.ReadLine()!;
             Console.WriteLine("enter type, (reporter, target, both, potential_agent)");
             string Type = Console.ReadLine()!;
-            Console.WriteLine("enter num report");
-            string NumReports = Console.ReadLine()!;
-            Console.WriteLine("enter num mention");
-            string NumMention = Console.ReadLine()!;
             Console.WriteLine("enter first status (dangerous)");
             string Status = Console.ReadLine()!;
-            Person person = new Person(FirstName,LastName,SecretCode,Type,NumReports ,NumMention); 
+            Person person = new Person(FirstName,LastName,SecretCode,Type); 
             return person;
         }
     }

@@ -8,5 +8,6 @@ namespace malshinon.dal
 {
     public class IntelReportsDal
     {
+
     }
 }

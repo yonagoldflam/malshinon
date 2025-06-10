@@ -6,8 +6,8 @@ namespace malshinon
     {
         static void Main(string[] args)
         {
-            PeopleDal P = new PeopleDal();
-            P.PersonIdentification("mus");
+            Initialization Init = new Initialization();
+            Init.PDalIns.PersonIdentification("mu");
 
         }
     }
