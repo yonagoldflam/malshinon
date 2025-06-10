@@ -16,6 +16,8 @@ namespace malshinon.dal
 
         public void Report()
         {
+            bool Done = false;
+            
             Console.WriteLine("enter your secret code");
             string RSC = Console.ReadLine();
             Console.WriteLine("enter target secret code");
@@ -48,6 +50,7 @@ namespace malshinon.dal
                 string Query = $"INSERT INTO intel_reports (reporter_id, target_id, text) VALUES ('{ReporterPerson.Id}', '{TargetPerson.Id}', '{Text}' );";
                 MySqlCommand cmd = new MySqlCommand(Query, Initialization.SqlData.connection);
                 cmd.ExecuteNonQuery();
+                Done = true;
             }
             catch (Exception ex)
             {
@@ -56,6 +59,9 @@ namespace malshinon.dal
             finally
             {
                 Initialization.SqlData.CloseConnection();
+                if ( Done ) 
+                    Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
+
             }
         }
     }

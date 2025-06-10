@@ -14,10 +14,6 @@ namespace malshinon.dal
 {
     public class PeopleDal
     {
-        
-        
-       
-
 
         public void AddPerson(Person person)
         {           
@@ -134,9 +130,24 @@ namespace malshinon.dal
             return null;
         }
 
-        //public int GetIdBySecretCode(string SecretCode)
-        //{
+        public void UpdateNumReports(int Id)
+        {
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                string query = $"UPDATE people SET num_reports = num_reports + 1 WHERE id = {Id}";
+                MySqlCommand cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                cmd.ExecuteNonQuery();
 
-        //}
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+        }
     }
 }
