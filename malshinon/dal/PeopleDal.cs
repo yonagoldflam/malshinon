@@ -14,48 +14,18 @@ namespace malshinon.dal
 {
     public class PeopleDal
     {
-        public MySqlData SqlData = new MySqlData();
-        public void PersonIdentification(string SecretCode)
-        {
-            string query = "SELECT * FROM people";
-            bool IsNotExists = true;
-            MySqlCommand cmd = null;
-            MySqlDataReader reader = null;
+        
+        
+       
 
-            try
-            {
-                SqlData.OpenConnection();
-                cmd = new MySqlCommand(query, SqlData.connection);
-                reader = cmd.ExecuteReader();
-
-                while (reader.Read() && IsNotExists)
-                {
-                    IsNotExists = reader.GetString("secret_code") == SecretCode ? false : true; 
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-            finally
-            {
-                SqlData.CloseConnection();
-            }
-
-            if (IsNotExists)
-            {
-                AddPerson(CreatePerson());
-            }
-        }
 
         public void AddPerson(Person person)
-        {
-            
+        {           
             try
             {
-                SqlData.OpenConnection();
+                Initialization.SqlData.OpenConnection();
                 string Query = $"INSERT INTO people (first_name, last_name, secret_code, type) VALUES ('{person.FirstName}', '{person.LastName}' , '{person.SecretCode}', '{person.Type}');";
-                MySqlCommand cmd = new MySqlCommand(Query, SqlData.connection);
+                MySqlCommand cmd = new MySqlCommand(Query, Initialization.SqlData.connection);
                 cmd.ExecuteNonQuery();
             }
 
@@ -65,24 +35,108 @@ namespace malshinon.dal
             }
             finally
             {
-                SqlData.CloseConnection();
+                Initialization.SqlData.CloseConnection();
             }
         }
 
-        public Person CreatePerson()
+        public Person CreatePerson(string SecretCode=null, string Type=null)
         {
             Console.WriteLine("enter first name");
             string FirstName = Console.ReadLine()!;
             Console.WriteLine("enter last name");
             string LastName = Console.ReadLine()!;
-            Console.WriteLine("enter secret code");
-            string SecretCode = Console.ReadLine()!;
-            Console.WriteLine("enter type, (reporter, target, both, potential_agent)");
-            string Type = Console.ReadLine()!;
-            Console.WriteLine("enter first status (dangerous)");
+            if (SecretCode == null)
+            {
+                Console.WriteLine("enter secret code");
+                SecretCode = Console.ReadLine()!;
+            }
+            if (Type == null)
+            {
+                Console.WriteLine("enter type, (reporter, target, both, potential_agent)");
+                Type = Console.ReadLine()!;
+            }
+            Console.WriteLine("enter status (dangerous)");
             string Status = Console.ReadLine()!;
             Person person = new Person(FirstName,LastName,SecretCode,Type); 
             return person;
         }
+
+        public Person GetPersonBySecretCode(string secretCode)
+        {
+            string query = $"SELECT * FROM people WHERE secret_code = '{secretCode}'";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int Id = reader.GetInt32("id");
+                    string FirstName = reader.GetString("first_name");
+                    string LastName = reader.GetString("last_name");
+                    string SecretCode = reader.GetString("secret_code");
+                    string Type = reader.GetString("type");
+                    int NumReports = reader.GetInt32("num_reports");
+                    int NumMentions = reader.GetInt32("num_mentions");
+                    return new Person(FirstName, LastName, SecretCode, Type, NumReports, NumMentions, Id);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+
+            return null;
+        }
+
+        public Person GetPersonById(int Id)
+        {
+            Console.WriteLine(Id);
+            string query = $"SELECT * FROM people WHERE id = {Id}";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int id = reader.GetInt32("id");
+                    string FirstName = reader.GetString("first_name");
+                    string LastName = reader.GetString("last_name");
+                    string SecretCode = reader.GetString("secret_code");
+                    string Type = reader.GetString("type");
+                    int NumReports = reader.GetInt32("num_reports");
+                    int NumMentions = reader.GetInt32("num_mentions");
+                    return new Person(FirstName, LastName, SecretCode, Type, NumReports, NumMentions, id);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+
+            return null;
+        }
+
+        //public int GetIdBySecretCode(string SecretCode)
+        //{
+
+        //}
     }
 }

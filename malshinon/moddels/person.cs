@@ -14,17 +14,19 @@ namespace malshinon.moddels
         public string LastName { get; set; }
         public string SecretCode { get; set; }
         public string Type { get; set; }
-        public string NumReports { get; set; }
-        public string NumMention { get; set; }
+        public int NumReports { get; set; }
+        public int NumMention { get; set; }
         public string Status { get; set; }
 
 
-        public Person(string FN, string LN, string SC, string type, int id = 0 )
+        public Person(string FN, string LN, string SC, string type, int NR=0, int NM=0, int id = 0 )
         {
             FirstName = FN;
             LastName = LN;
             SecretCode = SC;
             Type = type;
+            NumReports = NR;
+            NumMention = NM;
             Id = id; 
         }
 

@@ -3,11 +3,60 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
+using Google.Protobuf.Compiler;
+using malshinon.db;
+using malshinon.moddels;
+using MySql.Data.MySqlClient;
 
 namespace malshinon.dal
 {
     public class IntelReportsDal
     {
 
+        public void Report()
+        {
+            Console.WriteLine("enter your secret code");
+            string RSC = Console.ReadLine();
+            Console.WriteLine("enter target secret code");
+            string TSC = Console.ReadLine();
+            Console.WriteLine("enter report text");
+            string Text = Console.ReadLine();
+
+
+            Person ReporterPerson = Initialization.PersonDalIns.GetPersonBySecretCode(RSC);
+            if (ReporterPerson == null)
+            {
+                Console.WriteLine("You are identified as a new user in the system, please enter your details: ");
+                ReporterPerson = Initialization.PersonDalIns.CreatePerson(RSC, "reporter");
+                Initialization.PersonDalIns.AddPerson(ReporterPerson);
+                ReporterPerson = Initialization.PersonDalIns.GetPersonBySecretCode(RSC);            
+            }
+
+            Person TargetPerson = Initialization.PersonDalIns.GetPersonBySecretCode(TSC);
+            if (TargetPerson == null)
+            {
+                Console.WriteLine("The system does not recognize the target's details. Please enter their details:");
+                TargetPerson = Initialization.PersonDalIns.CreatePerson(TSC, "target");
+                Initialization.PersonDalIns.AddPerson(TargetPerson);
+                TargetPerson = Initialization.PersonDalIns.GetPersonBySecretCode(TSC);
+            }
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                string Query = $"INSERT INTO intel_reports (reporter_id, target_id, text) VALUES ('{ReporterPerson.Id}', '{TargetPerson.Id}', '{Text}' );";
+                MySqlCommand cmd = new MySqlCommand(Query, Initialization.SqlData.connection);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error : {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+        }
     }
 }

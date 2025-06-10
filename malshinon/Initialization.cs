@@ -1,4 +1,5 @@
 ﻿using malshinon.dal;
+using malshinon.db;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace malshinon
 {
-    public class Initialization
+    public static class Initialization
     {
-        public Menue MenueIns = new Menue();
-        public PeopleDal PDalIns = new PeopleDal();
-        public IntelReportsDal IDalIns = new IntelReportsDal();
+        public static PeopleDal PersonDalIns = new PeopleDal();
+        public static IntelReportsDal IntelReportDalIns = new IntelReportsDal();
+        
+        public static MySqlData SqlData = new MySqlData(); 
     }
 }
