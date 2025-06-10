@@ -149,5 +149,25 @@ namespace malshinon.dal
                 Initialization.SqlData.CloseConnection();
             }
         }
+
+        public void UpdateNumMentions(int Id)
+        {
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                string query = $"UPDATE people SET num_mentions = num_mentions + 1 WHERE id = {Id}";
+                MySqlCommand cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+        }
     }
 }

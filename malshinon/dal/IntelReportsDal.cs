@@ -59,8 +59,11 @@ namespace malshinon.dal
             finally
             {
                 Initialization.SqlData.CloseConnection();
-                if ( Done ) 
+                if (Done)
+                {                    
                     Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
+                    Initialization.PersonDalIns.UpdateNumMentions(TargetPerson.Id);
+                }
 
             }
         }
