@@ -51,7 +51,7 @@ namespace malshinon
         {
             Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
             Initialization.PersonDalIns.UpdateNumMentions(TargetPerson.Id);
-            if (Initialization.IntelReportDalIns.CalculateAvaregeLengthMeseges("reporter",ReporterPerson.Id) >= 100)
+            if (Initialization.IntelReportDalIns.CalculateAvaregeLengthMeseges(ReporterPerson.Id) >= 100)
                 Initialization.PersonDalIns.UpdateType(ReporterPerson.Id, "potential_agent");
 
             if (Initialization.PersonDalIns.IsDangerous(TargetPerson.Id))
@@ -61,7 +61,12 @@ namespace malshinon
         public void DisplyDangerousTargets()
         {
             int DangerousTargetId =Initialization.PersonDalIns.PrintDangerousTargets();
-            Console.WriteLine($" Average message length: {Initialization.IntelReportDalIns.CalculateAvaregeLengthMeseges("target", DangerousTargetId)} ");
+        }
+
+        public void DisplyPotentialAgents()
+        {
+            int DangerousTargetId = Initialization.PersonDalIns.DisplyPotentialAgent();
+            Console.WriteLine($" Average message length: {Initialization.IntelReportDalIns.CalculateAvaregeLengthMeseges(DangerousTargetId)} ");
         }
 
     }

@@ -15,7 +15,7 @@ namespace malshinon
             while (flag)
             {
                 Console.WriteLine("Choose one of the following options:");
-                Console.WriteLine("1. submit a report \n2. disply dangerous targets");
+                Console.WriteLine("1. submit a report \n2. disply potential agents \n3. disply dangerous targets");
                 switch (Console.ReadLine())
                 {
                     case "1":
@@ -23,6 +23,10 @@ namespace malshinon
                         break;
 
                     case "2":
+                        Initialization.Manage.DisplyPotentialAgents();
+                        break;
+
+                    case "3":
                         Initialization.Manage.DisplyDangerousTargets();
                         break;
 

@@ -36,9 +36,9 @@ namespace malshinon.dal
             return false;
         }
 
-        public int CalculateAvaregeLengthMeseges(string UsserType,int Id)
+        public int CalculateAvaregeLengthMeseges(int Id)
         {
-            string query = UsserType.ToLower() == "reporter" ?  $"SELECT * FROM intel_reports WHERE reporter_id = {Id}" : $"SELECT * FROM intel_reports WHERE target_id = {Id}";
+            string query = $"SELECT * FROM intel_reports WHERE reporter_id = {Id}";
             MySqlCommand cmd = null;
             MySqlDataReader reader = null;
             int Counter = 0;

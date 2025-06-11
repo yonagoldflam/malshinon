@@ -278,5 +278,38 @@ namespace malshinon.dal
 
             return -1;
         }
+
+        public int DisplyPotentialAgent()
+        {
+            string query = $"SELECT * FROM people WHERE type = '{"potential_agent"}'";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Console.WriteLine($"first name: {reader.GetString("first_name")}, " +
+                        $"last name: {reader.GetString("last_name")}, " +
+                        $"sum reports: {reader.GetInt32("num_reports")}, ");
+
+                    return reader.GetInt32("id");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+
+            return -1;
+        }
     }
 }
