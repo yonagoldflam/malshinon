@@ -6,21 +6,26 @@ using System.Threading.Tasks;
 
 namespace malshinon
 {
-    public class Menue
+    public static class Menue
     {
-        public Menue()
-        {
 
-        }
-
-        public void PrintMenue()
+        public static void PrintMenue()
         {
-            Console.WriteLine("Choose one of the following options:");
-            Console.WriteLine("1. submit a report");
-            switch (Console.ReadLine())
+            bool flag = true;
+            while (flag)
             {
-                case "1":
-                    break;
+                Console.WriteLine("Choose one of the following options:");
+                Console.WriteLine("1. submit a report\n");
+                switch (Console.ReadLine())
+                {
+                    case "1":
+                        Initialization.IntelReportDalIns.Report();
+                        break;
+
+                    default:
+                        flag = false;
+                        break;
+                }
             }
         }
             
