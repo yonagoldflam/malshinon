@@ -34,7 +34,8 @@ namespace malshinon
 
                 if (Initialization.IntelReportDalIns.There2MessagesInLast15Minutes())
                 {
-                    Console.WriteLine("!!!!!!!!!!!!================!!!!!!!!!!!!!");
+                    Console.WriteLine("!!!!!!!!!!!!=========ALERT=========!!!!!!!!!!!!!");
+                    Console.WriteLine(TargetPerson.Id);
                     Initialization.AlertDalIns.AddAlert(CreateAlert(TargetPerson.Id, "3 masage at last 15 minutes"));
                 }
             }
@@ -88,8 +89,8 @@ namespace malshinon
         public void DisplayAllAllertsDaidails()
         {
             int TargetId = Initialization.AlertDalIns.DisplyAllAlerts();
-            //Person targetPerson = Initialization.PersonDalIns.GetPersonById(TargetId);
-            //Console.WriteLine($"target first name: {targetPerson.FirstName}.target last name: {targetPerson.LastName}.target secret code: {targetPerson.SecretCode}");
+            Person targetPerson = Initialization.PersonDalIns.GetPersonById(TargetId);
+            Console.WriteLine($"target first name: {targetPerson.FirstName}.target last name: {targetPerson.LastName}.target secret code: {targetPerson.SecretCode}");
         }
 
     }
