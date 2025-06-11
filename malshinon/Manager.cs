@@ -31,6 +31,12 @@ namespace malshinon
             if (Done) 
             {
                 HandlePostReportUpdates();
+
+                if (Initialization.IntelReportDalIns.There2MessagesInLast15Minutes())
+                {
+                    Console.WriteLine("!!!!!!!!!!!!================!!!!!!!!!!!!!");
+                    Initialization.AlertDalIns.AddAlert(CreateAlert(TargetPerson.Id, "3 masage at last 15 minutes"));
+                }
             }
         }
 
@@ -67,6 +73,23 @@ namespace malshinon
         {
             int DangerousTargetId = Initialization.PersonDalIns.DisplyPotentialAgent();
             Console.WriteLine($" Average message length: {Initialization.IntelReportDalIns.CalculateAvaregeLengthMeseges(DangerousTargetId)} ");
+        }
+
+        public Alert CreateAlert(int TargetId, string Reason = null)
+        {
+            if (Reason == null)
+            {
+                Console.WriteLine("enter reason");
+                Reason = Console.ReadLine();
+            }
+            return new Alert(TargetId, Reason);
+        }
+
+        public void DisplayAllAllertsDaidails()
+        {
+            int TargetId = Initialization.AlertDalIns.DisplyAllAlerts();
+            //Person targetPerson = Initialization.PersonDalIns.GetPersonById(TargetId);
+            //Console.WriteLine($"target first name: {targetPerson.FirstName}.target last name: {targetPerson.LastName}.target secret code: {targetPerson.SecretCode}");
         }
 
     }

@@ -67,5 +67,34 @@ namespace malshinon.dal
             }
             return Counter>10 ? CountLength / Counter : 0;
         }
+
+        public bool There2MessagesInLast15Minutes() 
+        {
+            string query = $"SELECT * FROM intel_reports ORDER BY timestamp DESC LIMIT 2;";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    return (DateTime.Now - reader.GetDateTime("timestamp")).TotalMinutes <= 15;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+            return false; 
+        }
     }
 }
