@@ -14,8 +14,8 @@ namespace malshinon.moddels
         public string Reason { get; set; }
         public Alert(int TI, string reason, int id = 0, string CT= null) 
         {
-            Id = TI;    
-            TargetId = id;
+            TargetId = TI;    
+            Id = id;
             CreatedAt = CT;
             Reason = reason;           
         }
