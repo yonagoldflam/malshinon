@@ -95,7 +95,6 @@ namespace malshinon.dal
 
         public Person GetPersonById(int Id)
         {
-            Console.WriteLine(Id);
             string query = $"SELECT * FROM people WHERE id = {Id}";
             MySqlCommand cmd = null;
             MySqlDataReader reader = null;
@@ -156,6 +155,28 @@ namespace malshinon.dal
             {
                 Initialization.SqlData.OpenConnection();
                 string query = $"UPDATE people SET num_mentions = num_mentions + 1 WHERE id = {Id}";
+                MySqlCommand cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+        }
+
+
+        
+        public void UpdateType(int personId, string newType)
+        {
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                string query = $"UPDATE people SET type = '{newType}' WHERE id = {personId}";
                 MySqlCommand cmd = new MySqlCommand(query, Initialization.SqlData.connection);
                 cmd.ExecuteNonQuery();
 

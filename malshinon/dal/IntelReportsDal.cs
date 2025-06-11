@@ -63,9 +63,45 @@ namespace malshinon.dal
                 {                    
                     Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
                     Initialization.PersonDalIns.UpdateNumMentions(TargetPerson.Id);
+                    if (CheckHave10ReportsWith100AvgLetters(ReporterPerson.Id)) 
+                    {
+                        Initialization.PersonDalIns.UpdateType(ReporterPerson.Id, "potential_agent");
+                    }
                 }
 
             }
+        }
+
+        public bool CheckHave10ReportsWith100AvgLetters(int ReporterId)
+        {
+            string query = $"SELECT * FROM intel_reports WHERE reporter_id = {ReporterId}";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+            int Counter = 0;
+            int CountLetters = 0;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Counter++;
+                    CountLetters += reader.GetString("text").Length;
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+            return Counter >= 10 && (CountLetters / Counter) >= 100 ? true : false;
         }
     }
 }
