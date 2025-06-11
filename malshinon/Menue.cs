@@ -19,7 +19,7 @@ namespace malshinon
                 switch (Console.ReadLine())
                 {
                     case "1":
-                        Initialization.IntelReportDalIns.Report();
+                        Initialization.Manage.SubmitReport();
                         break;
 
                     default:

@@ -14,43 +14,15 @@ namespace malshinon.dal
     public class IntelReportsDal
     {
 
-        public void Report()
-        {
-            bool Done = false;
-            
-            Console.WriteLine("enter your secret code");
-            string RSC = Console.ReadLine();
-            Console.WriteLine("enter target secret code");
-            string TSC = Console.ReadLine();
-            Console.WriteLine("enter report text");
-            string Text = Console.ReadLine();
-
-
-            Person ReporterPerson = Initialization.PersonDalIns.GetPersonBySecretCode(RSC);
-            if (ReporterPerson == null)
-            {
-                Console.WriteLine("You are identified as a new user in the system, please enter your details: ");
-                ReporterPerson = Initialization.PersonDalIns.CreatePerson(RSC, "reporter");
-                Initialization.PersonDalIns.AddPerson(ReporterPerson);
-                ReporterPerson = Initialization.PersonDalIns.GetPersonBySecretCode(RSC);            
-            }
-
-            Person TargetPerson = Initialization.PersonDalIns.GetPersonBySecretCode(TSC);
-            if (TargetPerson == null)
-            {
-                Console.WriteLine("The system does not recognize the target's details. Please enter their details:");
-                TargetPerson = Initialization.PersonDalIns.CreatePerson(TSC, "target");
-                Initialization.PersonDalIns.AddPerson(TargetPerson);
-                TargetPerson = Initialization.PersonDalIns.GetPersonBySecretCode(TSC);
-            }
-            
+        public bool Report(int ReporterId, int TargetId, string ReportText)
+        {             
             try
             {
                 Initialization.SqlData.OpenConnection();
-                string Query = $"INSERT INTO intel_reports (reporter_id, target_id, text) VALUES ('{ReporterPerson.Id}', '{TargetPerson.Id}', '{Text}' );";
+                string Query = $"INSERT INTO intel_reports (reporter_id, target_id, text) VALUES ('{ReporterId}', '{TargetId}', '{ReportText}' );";
                 MySqlCommand cmd = new MySqlCommand(Query, Initialization.SqlData.connection);
                 cmd.ExecuteNonQuery();
-                Done = true;
+                return true;
             }
             catch (Exception ex)
             {
@@ -59,22 +31,9 @@ namespace malshinon.dal
             finally
             {
                 Initialization.SqlData.CloseConnection();
-                if (Done)
-                {                    
-                    Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
-                    Initialization.PersonDalIns.UpdateNumMentions(TargetPerson.Id);
-                    if (CheckHave10ReportsWith100AvgLetters(ReporterPerson.Id))                    
-                        Initialization.PersonDalIns.UpdateType(ReporterPerson.Id, "potential_agent");
-
-                    if (Initialization.PersonDalIns.IsDangerous(TargetPerson.Id))
-                        Initialization.PersonDalIns.UpdateStatus(TargetPerson.Id);
-
-
-
-
-                }
-
             }
+
+            return false;
         }
 
         public bool CheckHave10ReportsWith100AvgLetters(int ReporterId)

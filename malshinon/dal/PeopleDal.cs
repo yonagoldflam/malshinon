@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using malshinon.db;
 using malshinon.moddels;
 using System.Reflection.PortableExecutable;
+using System.Reflection.Metadata.Ecma335;
 
 namespace malshinon.dal
 {
@@ -23,6 +24,7 @@ namespace malshinon.dal
                 string Query = $"INSERT INTO people (first_name, last_name, secret_code, type) VALUES ('{person.FirstName}', '{person.LastName}' , '{person.SecretCode}', '{person.Type}');";
                 MySqlCommand cmd = new MySqlCommand(Query, Initialization.SqlData.connection);
                 cmd.ExecuteNonQuery();
+                //person.Id = cmd.LastInsertedId;
             }
 
             catch (Exception ex)
