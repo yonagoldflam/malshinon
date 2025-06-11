@@ -43,7 +43,7 @@ namespace malshinon.dal
                 Initialization.PersonDalIns.AddPerson(TargetPerson);
                 TargetPerson = Initialization.PersonDalIns.GetPersonBySecretCode(TSC);
             }
-
+            
             try
             {
                 Initialization.SqlData.OpenConnection();
@@ -63,10 +63,15 @@ namespace malshinon.dal
                 {                    
                     Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
                     Initialization.PersonDalIns.UpdateNumMentions(TargetPerson.Id);
-                    if (CheckHave10ReportsWith100AvgLetters(ReporterPerson.Id)) 
-                    {
+                    if (CheckHave10ReportsWith100AvgLetters(ReporterPerson.Id))                    
                         Initialization.PersonDalIns.UpdateType(ReporterPerson.Id, "potential_agent");
-                    }
+
+                    if (Initialization.PersonDalIns.IsDangerous(TargetPerson.Id))
+                        Initialization.PersonDalIns.UpdateStatus(TargetPerson.Id);
+
+
+
+
                 }
 
             }

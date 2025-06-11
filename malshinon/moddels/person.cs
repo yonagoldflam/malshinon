@@ -19,7 +19,7 @@ namespace malshinon.moddels
         public string Status { get; set; }
 
 
-        public Person(string FN, string LN, string SC, string type, int NR=0, int NM=0, int id = 0 )
+        public Person(string FN, string LN, string SC, string type, int NR=0, int NM=0,string status = null, int id = 0 )
         {
             FirstName = FN;
             LastName = LN;
@@ -27,12 +27,13 @@ namespace malshinon.moddels
             Type = type;
             NumReports = NR;
             NumMention = NM;
+            Status = status;
             Id = id; 
         }
 
         public void PrintAll()
         {
-            Console.WriteLine($"id: {Id}. FirstName: {FirstName}. LastName: {LastName} SecretCode: {SecretCode}. Type: {Type}. NumReports : {NumReports}. NumMention : {NumMention} ");
+            Console.WriteLine($"id: {Id}. FirstName: {FirstName}. LastName: {LastName} SecretCode: {SecretCode}. Type: {Type}. NumReports : {NumReports}. NumMention : {NumMention}.status : {Status} ");
         }
     }
 }

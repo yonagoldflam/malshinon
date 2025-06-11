@@ -78,7 +78,8 @@ namespace malshinon.dal
                     string Type = reader.GetString("type");
                     int NumReports = reader.GetInt32("num_reports");
                     int NumMentions = reader.GetInt32("num_mentions");
-                    return new Person(FirstName, LastName, SecretCode, Type, NumReports, NumMentions, Id);
+                    string Status = reader.GetString("status");
+                    return new Person(FirstName, LastName, SecretCode, Type, NumReports, NumMentions, Status, Id);
                 }
             }
             catch (Exception ex)
@@ -114,7 +115,8 @@ namespace malshinon.dal
                     string Type = reader.GetString("type");
                     int NumReports = reader.GetInt32("num_reports");
                     int NumMentions = reader.GetInt32("num_mentions");
-                    return new Person(FirstName, LastName, SecretCode, Type, NumReports, NumMentions, id);
+                    string Status = reader.GetString("status");
+                    return new Person(FirstName, LastName, SecretCode, Type, NumReports, NumMentions, Status, id);
                 }
             }
             catch (Exception ex)
@@ -177,6 +179,56 @@ namespace malshinon.dal
             {
                 Initialization.SqlData.OpenConnection();
                 string query = $"UPDATE people SET type = '{newType}' WHERE id = {personId}";
+                MySqlCommand cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                cmd.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+        }
+
+        public bool IsDangerous(int TargetId)
+        {
+            string query = $"SELECT * FROM people WHERE id = {TargetId}";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    if (reader.GetInt32("num_mentions") >= 20)
+                        return true;
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+            return false;
+        }
+
+        public void UpdateStatus(int PersonId)
+        {
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                string query = $"UPDATE people SET status = '{"dangerous"}' WHERE id = {PersonId}";
                 MySqlCommand cmd = new MySqlCommand(query, Initialization.SqlData.connection);
                 cmd.ExecuteNonQuery();
 
