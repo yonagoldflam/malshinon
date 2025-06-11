@@ -15,7 +15,7 @@ namespace malshinon.dal
     {
 
         public bool Report(int ReporterId, int TargetId, string ReportText)
-        {             
+        {
             try
             {
                 Initialization.SqlData.OpenConnection();
@@ -36,13 +36,13 @@ namespace malshinon.dal
             return false;
         }
 
-        public bool CheckHave10ReportsWith100AvgLetters(int ReporterId)
+        public int CalculateAvaregeLengthMeseges(string UsserType,int Id)
         {
-            string query = $"SELECT * FROM intel_reports WHERE reporter_id = {ReporterId}";
+            string query = UsserType.ToLower() == "reporter" ?  $"SELECT * FROM intel_reports WHERE reporter_id = {Id}" : $"SELECT * FROM intel_reports WHERE target_id = {Id}";
             MySqlCommand cmd = null;
             MySqlDataReader reader = null;
             int Counter = 0;
-            int CountLetters = 0;
+            int CountLength = 0;
 
             try
             {
@@ -53,8 +53,8 @@ namespace malshinon.dal
                 while (reader.Read())
                 {
                     Counter++;
-                    CountLetters += reader.GetString("text").Length;
-                    
+                    CountLength += reader.GetString("text").Length;
+
                 }
             }
             catch (Exception ex)
@@ -65,7 +65,7 @@ namespace malshinon.dal
             {
                 Initialization.SqlData.CloseConnection();
             }
-            return Counter >= 10 && (CountLetters / Counter) >= 100 ? true : false;
+            return Counter>10 ? CountLength / Counter : 0;
         }
     }
 }

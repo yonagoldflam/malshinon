@@ -15,11 +15,15 @@ namespace malshinon
             while (flag)
             {
                 Console.WriteLine("Choose one of the following options:");
-                Console.WriteLine("1. submit a report\n");
+                Console.WriteLine("1. submit a report \n2. disply dangerous targets");
                 switch (Console.ReadLine())
                 {
                     case "1":
                         Initialization.Manage.SubmitReport();
+                        break;
+
+                    case "2":
+                        Initialization.Manage.DisplyDangerousTargets();
                         break;
 
                     default:

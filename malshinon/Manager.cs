@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -50,11 +51,18 @@ namespace malshinon
         {
             Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
             Initialization.PersonDalIns.UpdateNumMentions(TargetPerson.Id);
-            if (Initialization.IntelReportDalIns.CheckHave10ReportsWith100AvgLetters(ReporterPerson.Id))
+            if (Initialization.IntelReportDalIns.CalculateAvaregeLengthMeseges("reporter",ReporterPerson.Id) >= 100)
                 Initialization.PersonDalIns.UpdateType(ReporterPerson.Id, "potential_agent");
 
             if (Initialization.PersonDalIns.IsDangerous(TargetPerson.Id))
                 Initialization.PersonDalIns.UpdateStatus(TargetPerson.Id);
         }
+
+        public void DisplyDangerousTargets()
+        {
+            int DangerousTargetId =Initialization.PersonDalIns.PrintDangerousTargets();
+            Console.WriteLine($" Average message length: {Initialization.IntelReportDalIns.CalculateAvaregeLengthMeseges("target", DangerousTargetId)} ");
+        }
+
     }
 }
