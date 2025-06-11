@@ -14,5 +14,7 @@ namespace malshinon
         public static IntelReportsDal IntelReportDalIns = new IntelReportsDal();
         
         public static MySqlData SqlData = new MySqlData(); 
+        public static Manager Manage = new Manager();
+        public static AlertDal AlertDalIns = new AlertDal();
     }
 }

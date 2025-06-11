@@ -14,43 +14,15 @@ namespace malshinon.dal
     public class IntelReportsDal
     {
 
-        public void Report()
+        public bool Report(int ReporterId, int TargetId, string ReportText)
         {
-            bool Done = false;
-            
-            Console.WriteLine("enter your secret code");
-            string RSC = Console.ReadLine();
-            Console.WriteLine("enter target secret code");
-            string TSC = Console.ReadLine();
-            Console.WriteLine("enter report text");
-            string Text = Console.ReadLine();
-
-
-            Person ReporterPerson = Initialization.PersonDalIns.GetPersonBySecretCode(RSC);
-            if (ReporterPerson == null)
-            {
-                Console.WriteLine("You are identified as a new user in the system, please enter your details: ");
-                ReporterPerson = Initialization.PersonDalIns.CreatePerson(RSC, "reporter");
-                Initialization.PersonDalIns.AddPerson(ReporterPerson);
-                ReporterPerson = Initialization.PersonDalIns.GetPersonBySecretCode(RSC);            
-            }
-
-            Person TargetPerson = Initialization.PersonDalIns.GetPersonBySecretCode(TSC);
-            if (TargetPerson == null)
-            {
-                Console.WriteLine("The system does not recognize the target's details. Please enter their details:");
-                TargetPerson = Initialization.PersonDalIns.CreatePerson(TSC, "target");
-                Initialization.PersonDalIns.AddPerson(TargetPerson);
-                TargetPerson = Initialization.PersonDalIns.GetPersonBySecretCode(TSC);
-            }
-            
             try
             {
                 Initialization.SqlData.OpenConnection();
-                string Query = $"INSERT INTO intel_reports (reporter_id, target_id, text) VALUES ('{ReporterPerson.Id}', '{TargetPerson.Id}', '{Text}' );";
+                string Query = $"INSERT INTO intel_reports (reporter_id, target_id, text) VALUES ('{ReporterId}', '{TargetId}', '{ReportText}' );";
                 MySqlCommand cmd = new MySqlCommand(Query, Initialization.SqlData.connection);
                 cmd.ExecuteNonQuery();
-                Done = true;
+                return true;
             }
             catch (Exception ex)
             {
@@ -59,31 +31,18 @@ namespace malshinon.dal
             finally
             {
                 Initialization.SqlData.CloseConnection();
-                if (Done)
-                {                    
-                    Initialization.PersonDalIns.UpdateNumReports(ReporterPerson.Id);
-                    Initialization.PersonDalIns.UpdateNumMentions(TargetPerson.Id);
-                    if (CheckHave10ReportsWith100AvgLetters(ReporterPerson.Id))                    
-                        Initialization.PersonDalIns.UpdateType(ReporterPerson.Id, "potential_agent");
-
-                    if (Initialization.PersonDalIns.IsDangerous(TargetPerson.Id))
-                        Initialization.PersonDalIns.UpdateStatus(TargetPerson.Id);
-
-
-
-
-                }
-
             }
+
+            return false;
         }
 
-        public bool CheckHave10ReportsWith100AvgLetters(int ReporterId)
+        public int CalculateAvaregeLengthMeseges(int Id)
         {
-            string query = $"SELECT * FROM intel_reports WHERE reporter_id = {ReporterId}";
+            string query = $"SELECT * FROM intel_reports WHERE reporter_id = {Id}";
             MySqlCommand cmd = null;
             MySqlDataReader reader = null;
             int Counter = 0;
-            int CountLetters = 0;
+            int CountLength = 0;
 
             try
             {
@@ -94,8 +53,8 @@ namespace malshinon.dal
                 while (reader.Read())
                 {
                     Counter++;
-                    CountLetters += reader.GetString("text").Length;
-                    
+                    CountLength += reader.GetString("text").Length;
+
                 }
             }
             catch (Exception ex)
@@ -106,7 +65,36 @@ namespace malshinon.dal
             {
                 Initialization.SqlData.CloseConnection();
             }
-            return Counter >= 10 && (CountLetters / Counter) >= 100 ? true : false;
+            return Counter>10 ? CountLength / Counter : 0;
+        }
+
+        public bool There2MessagesInLast15Minutes() 
+        {
+            string query = $"SELECT * FROM intel_reports ORDER BY timestamp DESC LIMIT 2;";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    return (DateTime.Now - reader.GetDateTime("timestamp")).TotalMinutes <= 15;
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+            return false; 
         }
     }
 }
