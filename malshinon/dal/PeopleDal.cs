@@ -310,5 +310,76 @@ namespace malshinon.dal
 
             return -1;
         }
+
+        public bool CheckPersonIsReporter(int Id)
+        {
+            string query = $"SELECT * FROM people WHERE secret_code = {Id}";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    
+                    if (reader.GetString("type") == "reporter")
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+
+            return false ;
+        }
+
+        public bool CheckPersonIsTarget(int Id)
+        {
+            string query = $"SELECT * FROM people WHERE id = {Id}";
+            MySqlCommand cmd = null;
+            MySqlDataReader reader = null;
+
+            try
+            {
+                Initialization.SqlData.OpenConnection();
+                cmd = new MySqlCommand(query, Initialization.SqlData.connection);
+                reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+
+                    if (reader.GetString("type") == "target")
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                Initialization.SqlData.CloseConnection();
+            }
+
+            return false;
+        }
+
+
+
+
     }
+
 }
