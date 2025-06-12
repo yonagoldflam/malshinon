@@ -32,8 +32,19 @@ namespace malshinon
             {
                 HandlePostReportUpdates();
 
+                if (Initialization.PersonDalIns.CheckPersonIsReporter(TargetPerson.Id))
+                {
+                    Initialization.PersonDalIns.UpdateType(TargetPerson.Id, "both");
+                }
+
+                if (Initialization.PersonDalIns.CheckPersonIsTarget(ReporterPerson.Id))
+                {
+                    Initialization.PersonDalIns.UpdateType(ReporterPerson.Id, "both");
+                }
+
                 if (Initialization.IntelReportDalIns.There2MessagesInLast15Minutes())
                 {
+                    
                     Console.WriteLine("!!!!!!!!!!!!=========ALERT=========!!!!!!!!!!!!!");
                     Console.WriteLine(TargetPerson.Id);
                     Initialization.AlertDalIns.AddAlert(CreateAlert(TargetPerson.Id, "3 masage at last 15 minutes"));
